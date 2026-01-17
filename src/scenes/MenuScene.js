@@ -29,22 +29,46 @@ export class MenuScene extends Phaser.Scene {
     }
 
     setupMenuButtons(container) {
-        const unlockAudio = () => {
+        const manageMusic = () => {
             if (this.sound.context && this.sound.context.state === 'suspended') {
                 this.sound.context.resume();
             }
 
-            // If any other BGM is playing (e.g. from level), stop it
-            const currentBGM = this.sound.get('bgm_menu');
-            if (!currentBGM || !currentBGM.isPlaying) {
-                // Stop other BGMs first
-                this.sound.getAllPlaying().forEach(s => {
-                    if (s.key.startsWith('bgm_') && s.key !== 'bgm_menu') {
+            // Get existing instances of menu music
+            const bgms = this.sound.getAll('bgm_menu');
+
+            // Stop and remove all but one if multiple exist
+            if (bgms.length > 1) {
+                bgms.forEach((s, index) => {
+                    if (index > 0) {
                         s.stop();
+                        this.sound.remove(s);
                     }
                 });
-                this.safePlaySound('bgm_menu', { loop: true, volume: 0.3 });
             }
+
+            const menuBgm = this.sound.get('bgm_menu');
+            const settings = JSON.parse(localStorage.getItem('gameSettings') || '{"music": 1}');
+            const targetVolume = (settings.music !== undefined ? settings.music : 1) * 0.3;
+
+            // If music is already playing, just update volume and return
+            if (menuBgm && menuBgm.isPlaying) {
+                menuBgm.setVolume(targetVolume);
+                return;
+            }
+
+            // Stop any other BGMs (from levels)
+            this.sound.getAllPlaying().forEach(s => {
+                if (s.key.startsWith('bgm_') && s.key !== 'bgm_menu') {
+                    s.stop();
+                }
+            });
+
+            // Play menu music
+            this.safePlaySound('bgm_menu', {
+                loop: true,
+                volume: targetVolume
+            });
         };
 
         const buttons = {
@@ -58,14 +82,21 @@ export class MenuScene extends Phaser.Scene {
             const btn = container.getChildByID(id);
             if (btn) {
                 btn.addEventListener('click', () => {
-                    unlockAudio();
+                    this.safePlaySound('collect', { volume: 0.5 });
+                    manageMusic();
                     action();
                 });
             }
         }
+
+        // Also try to start music immediately on scene creation (might be blocked by browser)
+        manageMusic();
     }
 
     showLeaderboard() {
+        if (this.leaderboardOpen) return;
+        this.leaderboardOpen = true;
+
         const { width, height } = this.scale;
         const highScores = JSON.parse(localStorage.getItem('highScores') || '{}');
         let scoresHTML = '';
@@ -87,13 +118,20 @@ export class MenuScene extends Phaser.Scene {
 
         const modal = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(leaderboardModal);
         modal.getChildByID('close-leaderboard').addEventListener('click', () => {
+            this.safePlaySound('collect', { volume: 0.5 });
+            this.leaderboardOpen = false;
             modal.destroy();
         });
     }
 
     safePlaySound(key, config) {
         if (this.cache.audio.exists(key)) {
-            this.sound.play(key, config);
+            const settings = JSON.parse(localStorage.getItem('gameSettings') || '{"sfx": 1}');
+            const finalConfig = config || {};
+            if (!key.startsWith('bgm_')) {
+                finalConfig.volume = (finalConfig.volume || 1) * (settings.sfx !== undefined ? settings.sfx : 1);
+            }
+            this.sound.play(key, finalConfig);
         }
     }
 }

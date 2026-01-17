@@ -4,6 +4,19 @@ export class SettingsScene extends Phaser.Scene {
     }
 
     create() {
+        // Stop level music if playing
+        this.sound.getAllPlaying().forEach(s => {
+            if (s.key.startsWith('bgm_') && s.key !== 'bgm_menu') {
+                s.stop();
+            }
+        });
+
+        // Ensure menu music is playing if it was started
+        const menuBgm = this.sound.get('bgm_menu');
+        if (menuBgm && !menuBgm.isPlaying) {
+            menuBgm.play();
+        }
+
         const { width, height } = this.scale;
 
         // Background (re-use Menu background)
@@ -62,22 +75,49 @@ export class SettingsScene extends Phaser.Scene {
             localStorage.setItem('gameSettings', JSON.stringify(newSettings));
 
             // Apply to Phaser Sound Manager
-            this.sound.volume = newSettings.master;
-            this.sound.mute = newSettings.mute;
+            this.sound.setVolume(newSettings.master);
+            this.sound.setMute(newSettings.mute);
 
-            // We can't easily set per-category volume in basic Phaser sound manager without groups,
-            // but we can adjust playing sounds or store for future ones.
-            // For now, let's just use Master Volume and Mute as primary controls.
+            // Apply music volume to all playing BGMs
+            this.sound.getAllPlaying().forEach(s => {
+                if (s.key.startsWith('bgm_')) {
+                    // Level BGMs use 0.3 base, Menu BGM uses 0.3 base
+                    s.setVolume(newSettings.music * 0.3);
+                }
+            });
         };
 
         masterSlider.addEventListener('input', () => { updateTexts(); applySettings(); });
         musicSlider.addEventListener('input', () => { updateTexts(); applySettings(); });
-        sfxSlider.addEventListener('input', () => { updateTexts(); applySettings(); });
-        muteToggle.addEventListener('change', () => { applySettings(); });
+        sfxSlider.addEventListener('input', () => {
+            updateTexts();
+            applySettings();
+            // Play a small sfx preview
+            if (!this.lastSfxPreview || this.time.now > this.lastSfxPreview + 200) {
+                this.safePlaySound('collect', { volume: 0.3 });
+                this.lastSfxPreview = this.time.now;
+            }
+        });
+        muteToggle.addEventListener('change', () => {
+            applySettings();
+            this.safePlaySound('collect', { volume: 0.5 });
+        });
 
         container.getChildByID('close-settings').addEventListener('click', () => {
             applySettings();
+            this.safePlaySound('collect', { volume: 0.5 });
             this.scene.start('MenuScene');
         });
+    }
+
+    safePlaySound(key, config) {
+        if (this.cache.audio.exists(key)) {
+            const settings = JSON.parse(localStorage.getItem('gameSettings') || '{"sfx": 1}');
+            const finalConfig = config || {};
+            if (!key.startsWith('bgm_')) {
+                finalConfig.volume = (finalConfig.volume || 1) * (settings.sfx !== undefined ? settings.sfx : 1);
+            }
+            this.sound.play(key, finalConfig);
+        }
     }
 }

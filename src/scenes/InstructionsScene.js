@@ -4,6 +4,19 @@ export class InstructionsScene extends Phaser.Scene {
     }
 
     create() {
+        // Stop level music if playing
+        this.sound.getAllPlaying().forEach(s => {
+            if (s.key.startsWith('bgm_') && s.key !== 'bgm_menu') {
+                s.stop();
+            }
+        });
+
+        // Ensure menu music is playing if it was started
+        const menuBgm = this.sound.get('bgm_menu');
+        if (menuBgm && !menuBgm.isPlaying) {
+            menuBgm.play();
+        }
+
         const { width, height } = this.scale;
 
         // Background
@@ -29,12 +42,24 @@ export class InstructionsScene extends Phaser.Scene {
         const closeBtn = container.getChildByID('close-instructions');
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
+                this.safePlaySound('collect', { volume: 0.5 });
                 this.scene.start('MenuScene');
             });
             // Apply glass-button class if it doesn't have a good one
             closeBtn.classList.add('glass-button');
             closeBtn.style.width = 'auto';
             closeBtn.style.padding = '0.75rem 3rem';
+        }
+    }
+
+    safePlaySound(key, config) {
+        if (this.cache.audio.exists(key)) {
+            const settings = JSON.parse(localStorage.getItem('gameSettings') || '{"sfx": 1}');
+            const finalConfig = config || {};
+            if (!key.startsWith('bgm_')) {
+                finalConfig.volume = (finalConfig.volume || 1) * (settings.sfx !== undefined ? settings.sfx : 1);
+            }
+            this.sound.play(key, finalConfig);
         }
     }
 }
