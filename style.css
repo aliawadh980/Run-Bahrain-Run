@@ -1,21 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+
 body {
     margin: 0;
     padding: 0;
-    background-color: #1a1a1a;
+    background-color: #020617;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Rajdhani', sans-serif;
 }
 
 #game-container {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+    box-shadow: 0 0 50px rgba(0, 242, 255, 0.2);
     border-radius: 8px;
     overflow: hidden;
 }
 
 canvas {
     display: block;
+}
+
+.glow-text {
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.8),
+                 0 0 20px rgba(0, 242, 255, 0.5),
+                 0 0 30px rgba(0, 242, 255, 0.3);
+}
+
+.glass-button {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 242, 255, 0.5);
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.glass-button:hover {
+    background: rgba(0, 242, 255, 0.2);
+    border-color: #00f2ff;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
+    transform: translateY(-2px);
+    color: #00f2ff;
+}
+
+.glass-button:active {
+    transform: translateY(1px);
+}
+
+.glass-panel {
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(16px);
+    border: 2px solid #00f2ff;
+    box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+    border-radius: 1rem;
 }
