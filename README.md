@@ -25,6 +25,40 @@ This project was created 100% by AI.
 - Collect **Energy Pearls** and **Golden Dates** for points.
 - Avoid drones and other obstacles!
 
+## How to Run on Your PC (For Beginners)
+
+If you want to play this game on your own computer, follow these simple steps:
+
+### 1. Download the Code
+- Click the green **Code** button at the top of this GitHub page.
+- Select **Download ZIP**.
+- Once downloaded, **unzip/extract** the folder to your Desktop.
+
+### 2. Open a Terminal (Command Prompt)
+- **Windows**: Press the `Start` key, type `cmd`, and press Enter.
+- **Mac/Linux**: Open the `Terminal` app.
+
+### 3. Navigate to the Game Folder
+Type `cd` followed by a space, then drag the folder you unzipped into the terminal window. It should look something like this:
+```bash
+cd C:\Users\YourName\Desktop\bahrain-quest-2026
+```
+Press **Enter**.
+
+### 4. Start the Game Server
+Type this command and press **Enter**:
+```bash
+python -m http.server 8000
+```
+*(If that doesn't work, try `python3 -m http.server 8000`)*
+
+### 5. Play!
+Open your web browser (Chrome, Safari, or Edge) and type this in the address bar:
+```text
+http://localhost:8000
+```
+The game should now load and you can start playing!
+
 ## Tech Stack
 - **Engine**: Phaser 3
 - **Language**: JavaScript (ES6+)
