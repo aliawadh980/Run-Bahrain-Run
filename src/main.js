@@ -2,6 +2,7 @@ import { BootScene } from './scenes/BootScene.js';
 import { MenuScene } from './scenes/MenuScene.js';
 import { GameScene } from './scenes/GameScene.js';
 import { LevelSelectScene } from './scenes/LevelSelectScene.js';
+import { InstructionsScene } from './scenes/InstructionsScene.js';
 import { UIScene } from './scenes/UIScene.js';
 
 const config = {
@@ -18,7 +19,7 @@ const config = {
             debug: false
         }
     },
-    scene: [BootScene, MenuScene, LevelSelectScene, GameScene, UIScene],
+    scene: [BootScene, MenuScene, LevelSelectScene, InstructionsScene, GameScene, UIScene],
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,

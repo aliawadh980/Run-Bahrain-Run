@@ -1,0 +1,30 @@
+<header class="relative z-10 text-center mb-16">
+    <h1 class="text-5xl md:text-6xl font-extrabold text-primary mb-2 glitch-text tracking-tighter italic">
+        BAHRAIN QUEST 2026
+    </h1>
+    <p class="text-slate-400 uppercase tracking-widest text-sm">Select Mission Parameters</p>
+</header>
+<main id="level-cards" class="relative z-10 flex flex-wrap justify-center gap-6 w-full max-w-7xl">
+    <!-- Level cards will be dynamically inserted here -->
+</main>
+<footer class="fixed bottom-12 left-0 right-0 px-12 z-10 flex justify-between items-center w-full max-w-screen-2xl mx-auto">
+    <button id="back-to-menu" class="group flex items-center gap-2 text-slate-400 hover:text-primary transition-colors duration-200">
+        <span class="material-symbols-outlined transition-transform group-hover:-translate-x-1">arrow_back</span>
+        <span class="font-bold tracking-widest text-sm uppercase">Back to Menu</span>
+    </button>
+    <div class="hidden lg:flex items-center gap-8 text-xs text-slate-500 uppercase tracking-[0.3em]">
+        <span>Local User: AI_PLAYER_01</span>
+        <div class="h-1 w-24 bg-slate-800 rounded-full overflow-hidden">
+            <div id="progress-bar" class="h-full bg-primary w-0"></div>
+        </div>
+        <span id="progress-text">0% Progress</span>
+    </div>
+</footer>
+<style>
+    :root { --primary: #00FFC2; }
+    .glitch-text { text-shadow: 0 0 8px rgba(0, 255, 194, 0.8); }
+    .neon-glow { box-shadow: 0 0 20px rgba(0, 255, 194, 0.4); border: 2px solid var(--primary); }
+    .card-hover:hover { transform: translateY(-10px); transition: all 0.3s ease; }
+    .locked-card { filter: grayscale(1) opacity(0.5); }
+    .hover\:text-primary:hover { color: var(--primary); }
+</style>
