@@ -50,6 +50,11 @@ export class BootScene extends Phaser.Scene {
         for (let key in Assets.sounds) {
             this.load.audio(key, Assets.sounds[key]);
         }
+
+        // Load UI HTML Templates
+        this.load.html('menu', 'assets/ui/menu.html');
+        this.load.html('instructions', 'assets/ui/instructions.html');
+        this.load.html('level-select', 'assets/ui/level-select.html');
     }
 
     create() {

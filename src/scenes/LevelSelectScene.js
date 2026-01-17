@@ -5,33 +5,54 @@ export class LevelSelectScene extends Phaser.Scene {
 
     create() {
         const { width, height } = this.scale;
-        this.add.image(width / 2, height / 2, 'background2').setAlpha(0.6).setDisplaySize(width, height);
 
-        this.load.html('level-select', 'assets/ui/level-select.html');
-        this.load.once('complete', () => {
-            const levelSelect = this.add.dom(width / 2, height / 2).createFromCache('level-select');
-            this.populateLevels(levelSelect);
-            this.updateProgress(levelSelect);
-            levelSelect.getChildByID('back-to-menu').addEventListener('click', () => {
+        // Background
+        this.add.image(width / 2, height / 2, 'background2')
+            .setAlpha(0.3)
+            .setDisplaySize(width, height);
+
+        // UI Container for centering
+        const containerHTML = `
+            <div style="width: ${width}px; height: ${height}px; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; padding: 2rem; box-sizing: border-box;">
+                <div id="level-select-content" style="pointer-events: auto; width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center;">
+                </div>
+            </div>
+        `;
+
+        const container = this.add.dom(width / 2, height / 2).createFromHTML(containerHTML);
+        const contentArea = container.getChildByID('level-select-content');
+
+        // Load the actual content from cache
+        const levelSelectBody = this.add.dom(0, 0).createFromCache('level-select');
+        contentArea.appendChild(levelSelectBody.node);
+
+        this.populateLevels(container);
+        this.updateProgress(container);
+
+        const backBtn = container.getChildByID('back-to-menu');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
                 this.scene.start('MenuScene');
             });
-        });
-        this.load.start();
+        }
     }
 
-    populateLevels(levelSelect) {
-        const levelCardsContainer = levelSelect.getChildByID('level-cards');
+    populateLevels(container) {
+        const levelCardsContainer = container.getChildByID('level-cards');
+        if (!levelCardsContainer) return;
+
+        levelCardsContainer.innerHTML = ''; // Clear it
         const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
 
         const levels = [
-            { id: 1, name: 'Manama Skyline Sprint', icon: 'apartment', desc: '"The Concrete Jungle of 2026"' },
-            { id: 2, name: 'Souq Adventure', icon: 'temple_hindu', desc: '"Tradition Meets Technology"' },
-            { id: 3, name: 'Amwaj Islands Dash', icon: 'waves', desc: '"Azure Waters Await"' },
-            { id: 4, name: 'Desert of the Future', icon: 'landscape', desc: '"Uncharted Dunes"' },
-            { id: 5, name: 'Vision Hub 2026', icon: 'hub', desc: '"The Final Core"' }
+            { id: 1, name: 'Manama Skyline', icon: 'apartment', desc: '"Concrete Jungle"' },
+            { id: 2, name: 'Souq Adventure', icon: 'temple_hindu', desc: '"Tradition & Tech"' },
+            { id: 3, name: 'Amwaj Dash', icon: 'waves', desc: '"Azure Waters"' },
+            { id: 4, name: 'Desert Future', icon: 'landscape', desc: '"Uncharted Dunes"' },
+            { id: 5, name: 'Vision Hub', icon: 'hub', desc: '"The Final Core"' }
         ];
 
-        levels.forEach((level, index) => {
+        levels.forEach((level) => {
             const isUnlocked = level.id === 1 || completedLevels.includes(level.id - 1);
             const isCompleted = completedLevels.includes(level.id);
             const card = this.createLevelCard(level, isUnlocked, isCompleted);
@@ -41,13 +62,14 @@ export class LevelSelectScene extends Phaser.Scene {
 
     createLevelCard(level, isUnlocked, isCompleted) {
         const cardHTML = `
-            <div class="group relative card-hover bg-slate-900/80 border ${isUnlocked ? 'border-primary/50 hover:neon-glow' : 'border-slate-800'} w-64 p-6 rounded-xl flex flex-col items-center text-center ${isUnlocked ? 'cursor-pointer' : 'locked-card'}">
-                ${isCompleted ? '<div class="absolute top-2 right-2"><span class="material-symbols-outlined text-primary font-bold">check_circle</span></div>' : ''}
-                ${!isUnlocked ? '<div class="absolute inset-0 flex items-center justify-center z-20"><span class="material-symbols-outlined text-4xl text-white">lock</span></div>' : ''}
-                <div class="w-full aspect-video bg-slate-800 rounded-lg mb-4 flex items-center justify-center"><span class="material-symbols-outlined text-6xl ${isUnlocked ? 'text-primary' : 'text-slate-600'}">${level.icon}</span></div>
-                <h3 class="text-white font-bold text-lg mb-2">${level.name}</h3>
-                <p class="text-xs ${isUnlocked ? 'text-slate-400' : 'text-slate-500'} mb-4 italic">${level.desc}</p>
-                <div class="mt-auto w-full py-2 ${isUnlocked ? 'bg-primary text-slate-900' : 'bg-slate-800 text-slate-600'} font-bold text-sm rounded">${isCompleted ? 'REPLAY' : (isUnlocked ? 'START' : 'LOCKED')}</div>
+            <div class="level-card ${isUnlocked ? 'unlocked' : 'locked'} ${isCompleted ? 'completed' : ''}">
+                <div class="card-icon">
+                    <span class="material-icons">${level.icon}</span>
+                </div>
+                <h3 class="card-title">${level.name}</h3>
+                <p class="card-desc">${level.desc}</p>
+                <div class="card-status">${isCompleted ? 'REPLAY' : (isUnlocked ? 'START' : 'LOCKED')}</div>
+                ${isCompleted ? '<div class="check-mark">✓</div>' : ''}
             </div>
         `;
         const card = document.createElement('div');
@@ -62,13 +84,13 @@ export class LevelSelectScene extends Phaser.Scene {
         return cardElement;
     }
 
-    updateProgress(levelSelect) {
+    updateProgress(container) {
         const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
         const progress = (completedLevels.length / 5) * 100;
-        const progressBar = levelSelect.getChildByID('progress-bar');
-        const progressText = levelSelect.getChildByID('progress-text');
+        const progressBar = container.getChildByID('progress-bar');
+        const progressText = container.getChildByID('progress-text');
 
-        progressBar.style.width = `${progress}%`;
-        progressText.innerText = `${Math.round(progress)}% Progress`;
+        if (progressBar) progressBar.style.width = `${progress}%`;
+        if (progressText) progressText.innerText = `${Math.round(progress)}% Progress`;
     }
 }
