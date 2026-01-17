@@ -21,9 +21,8 @@ export class MenuScene extends Phaser.Scene {
         const container = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(containerHTML);
         const contentArea = container.getChildByID('menu-content');
 
-        // Load content from cache
-        const menuBody = this.add.dom(0, 0).createFromCache('menu');
-        contentArea.appendChild(menuBody.node);
+        // Load content from cache as HTML string
+        contentArea.innerHTML = this.cache.html.get('menu');
 
         this.setupMenuButtons(container);
     }

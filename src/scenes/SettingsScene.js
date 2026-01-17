@@ -34,8 +34,8 @@ export class SettingsScene extends Phaser.Scene {
         const container = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(containerHTML);
         const contentArea = container.getChildByID('settings-content');
 
-        const settingsBody = this.add.dom(0, 0).createFromCache('settings');
-        contentArea.appendChild(settingsBody.node);
+        // Load content from cache as HTML string
+        contentArea.innerHTML = this.cache.html.get('settings');
 
         this.setupControls(container);
     }

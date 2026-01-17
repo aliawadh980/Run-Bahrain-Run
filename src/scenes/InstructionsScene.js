@@ -26,8 +26,8 @@ export class InstructionsScene extends Phaser.Scene {
 
         // UI Container for centering
         const containerHTML = `
-            <div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center; pointer-events: none; padding: 2rem; box-sizing: border-box;">
-                <div id="instructions-content" style="pointer-events: auto; width: 100%; max-width: 900px;">
+            <div style="width: ${width}px; height: ${height}px; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; padding: 2rem; box-sizing: border-box;">
+                <div id="instructions-content" style="pointer-events: auto; width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center;">
                 </div>
             </div>
         `;
@@ -35,9 +35,8 @@ export class InstructionsScene extends Phaser.Scene {
         const container = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(containerHTML);
         const contentArea = container.getChildByID('instructions-content');
 
-        // Load the actual content from cache
-        const instructionsBody = this.add.dom(0, 0).createFromCache('instructions');
-        contentArea.appendChild(instructionsBody.node);
+        // Load the actual content from cache as HTML string
+        contentArea.innerHTML = this.cache.html.get('instructions');
 
         const closeBtn = container.getChildByID('close-instructions');
         if (closeBtn) {
