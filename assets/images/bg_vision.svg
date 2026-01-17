@@ -1,0 +1,24 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#000" />
+  <!-- Neon Grid -->
+  <path d="M0 400 L800 400" stroke="#00ffff" stroke-width="1" />
+  <path d="M0 450 L800 450" stroke="#00ffff" stroke-width="1" />
+  <path d="M0 500 L800 500" stroke="#00ffff" stroke-width="1" />
+  <path d="M0 550 L800 550" stroke="#00ffff" stroke-width="1" />
+
+  <path d="M100 400 L0 600" stroke="#00ffff" stroke-width="1" />
+  <path d="M200 400 L100 600" stroke="#00ffff" stroke-width="1" />
+  <path d="M300 400 L250 600" stroke="#00ffff" stroke-width="1" />
+  <path d="M400 400 L400 600" stroke="#00ffff" stroke-width="1" />
+  <path d="M500 400 L550 600" stroke="#00ffff" stroke-width="1" />
+  <path d="M600 400 L700 600" stroke="#00ffff" stroke-width="1" />
+  <path d="M700 400 L800 600" stroke="#00ffff" stroke-width="1" />
+
+  <!-- Floating Data Crystals -->
+  <polygon points="150,100 170,130 150,160 130,130" fill="#ff00ff" opacity="0.6">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 0,20; 0,0" dur="3s" repeatCount="indefinite" />
+  </polygon>
+  <polygon points="600,150 620,180 600,210 580,180" fill="#00ffff" opacity="0.6">
+    <animateTransform attributeName="transform" type="translate" values="0,0; 0,-20; 0,0" dur="4s" repeatCount="indefinite" />
+  </polygon>
+</svg>

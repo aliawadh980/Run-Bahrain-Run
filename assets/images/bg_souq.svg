@@ -1,0 +1,18 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#2c1a1a" />
+
+  <!-- Bab Al Bahrain Arch -->
+  <path d="M300 600 L300 300 Q400 200 500 300 L500 600" fill="#3d2a2a" />
+  <rect x="280" y="280" width="240" height="40" fill="#4d3a3a" />
+
+  <!-- Lanterns -->
+  <line x1="150" y1="0" x2="150" y2="100" stroke="#ffd700" stroke-width="1" />
+  <rect x="140" y="100" width="20" height="30" rx="5" fill="#ffd700" />
+
+  <line x1="650" y1="0" x2="650" y2="150" stroke="#ffd700" stroke-width="1" />
+  <rect x="640" y="150" width="20" height="30" rx="5" fill="#ffd700" />
+
+  <!-- Warm glow -->
+  <circle cx="150" cy="115" r="30" fill="#ffd700" opacity="0.1" />
+  <circle cx="650" cy="165" r="30" fill="#ffd700" opacity="0.1" />
+</svg>
