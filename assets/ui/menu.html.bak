@@ -1,0 +1,50 @@
+<div id="menu-container" class="relative z-10 w-full max-w-4xl px-6 flex flex-col items-center">
+    <header class="text-center mb-16 animate-float">
+        <h1 class="font-display text-5xl md:text-8xl font-black italic tracking-tighter text-primary glow-text uppercase">
+            Bahrain Quest
+            <span class="block text-4xl md:text-6xl mt-2 text-white dark:text-white/90 tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">2026</span>
+        </h1>
+        <div class="w-32 h-1 bg-primary mx-auto mt-6 neon-line rounded-full"></div>
+    </header>
+    <nav class="flex flex-col gap-6 w-full max-w-md">
+        <button id="start-game" class="glass-button py-4 px-8 rounded-lg group flex items-center justify-between overflow-hidden relative">
+            <span class="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
+            <span class="font-display text-xl font-bold tracking-widest uppercase">Start Game</span>
+            <span class="material-icons text-primary group-hover:translate-x-1 transition-transform">play_arrow</span>
+        </button>
+        <button id="leaderboard" class="glass-button py-4 px-8 rounded-lg group flex items-center justify-between">
+            <span class="font-display text-xl font-bold tracking-widest uppercase text-white/80 group-hover:text-primary transition-colors">Leaderboard</span>
+            <span class="material-icons text-white/40 group-hover:text-primary transition-colors">leaderboard</span>
+        </button>
+        <button id="how-to-play" class="glass-button py-4 px-8 rounded-lg group flex items-center justify-between">
+            <span class="font-display text-xl font-bold tracking-widest uppercase text-white/80 group-hover:text-primary transition-colors">How to Play</span>
+            <span class="material-icons text-white/40 group-hover:text-primary transition-colors">help_outline</span>
+        </button>
+        <button id="settings" class="glass-button py-4 px-8 rounded-lg group flex items-center justify-between">
+            <span class="font-display text-xl font-bold tracking-widest uppercase text-white/80 group-hover:text-primary transition-colors">Settings</span>
+            <span class="material-icons text-white/40 group-hover:rotate-90 transition-transform">settings</span>
+        </button>
+    </nav>
+    <footer class="mt-20 flex flex-col items-center gap-4 text-white/50 text-sm tracking-widest uppercase">
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-2">
+                <span class="material-icons text-xs">videogame_asset</span>
+                <span>Ver 1.0.4 - Alpha</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="material-icons text-xs">public</span>
+                <span>Region: Middle East</span>
+            </div>
+        </div>
+        <p class="font-body opacity-60">Created by AI for Bahrain 2026 Vision</p>
+    </footer>
+</div>
+<style>
+    :root { --primary: #00f2ff; }
+    .glow-text { text-shadow: 0 0 10px rgba(0, 242, 255, 0.8), 0 0 20px rgba(0, 242, 255, 0.5); }
+    .glass-button { background: rgba(0, 242, 255, 0.05); backdrop-filter: blur(8px); border: 1px solid rgba(0, 242, 255, 0.3); }
+    .glass-button:hover { background: rgba(0, 242, 255, 0.2); border-color: var(--primary); box-shadow: 0 0 20px rgba(0, 242, 255, 0.4); }
+    .neon-line { box-shadow: 0 0 15px var(--primary); }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+</style>

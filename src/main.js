@@ -10,7 +10,7 @@ const config = {
     width: 1024,
     height: 768,
     parent: 'game-container',
-    backgroundColor: '#000000',
+    transparent: true,
     resolution: window.devicePixelRatio || 1,
     physics: {
         default: 'arcade',
