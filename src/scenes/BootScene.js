@@ -55,9 +55,15 @@ export class BootScene extends Phaser.Scene {
         this.load.html('menu', 'assets/ui/menu.html');
         this.load.html('instructions', 'assets/ui/instructions.html');
         this.load.html('level-select', 'assets/ui/level-select.html');
+        this.load.html('settings', 'assets/ui/settings.html');
     }
 
     create() {
+        // Apply saved settings
+        const settings = JSON.parse(localStorage.getItem('gameSettings') || '{"master": 1, "music": 1, "sfx": 1, "mute": false}');
+        this.sound.volume = settings.master;
+        this.sound.mute = settings.mute;
+
         this.scene.start('MenuScene');
     }
 }

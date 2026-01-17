@@ -6,14 +6,19 @@ export class MenuScene extends Phaser.Scene {
     create() {
         const { width, height } = this.scale;
 
+        // Background
+        this.add.image(width / 2, height / 2, 'background1')
+            .setDisplaySize(width, height)
+            .setAlpha(0.5);
+
         const containerHTML = `
-            <div style="width: ${width}px; height: ${height}px; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;">
+            <div style="width: ${width}px; height: ${height}px; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; position: relative;">
                 <div id="menu-content" style="pointer-events: auto; width: 100%; display: flex; flex-direction: column; align-items: center;">
                 </div>
             </div>
         `;
 
-        const container = this.add.dom(width / 2, height / 2).createFromHTML(containerHTML);
+        const container = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(containerHTML);
         const contentArea = container.getChildByID('menu-content');
 
         // Load content from cache
@@ -28,14 +33,25 @@ export class MenuScene extends Phaser.Scene {
             if (this.sound.context && this.sound.context.state === 'suspended') {
                 this.sound.context.resume();
             }
-            this.safePlaySound('bgm_menu', { loop: true, volume: 0.3 });
+
+            // If any other BGM is playing (e.g. from level), stop it
+            const currentBGM = this.sound.get('bgm_menu');
+            if (!currentBGM || !currentBGM.isPlaying) {
+                // Stop other BGMs first
+                this.sound.getAllPlaying().forEach(s => {
+                    if (s.key.startsWith('bgm_') && s.key !== 'bgm_menu') {
+                        s.stop();
+                    }
+                });
+                this.safePlaySound('bgm_menu', { loop: true, volume: 0.3 });
+            }
         };
 
         const buttons = {
             'start-game': () => this.scene.start('LevelSelectScene'),
             'leaderboard': () => this.showLeaderboard(),
             'how-to-play': () => this.scene.start('InstructionsScene'),
-            'settings': () => console.log('Settings clicked')
+            'settings': () => this.scene.start('SettingsScene')
         };
 
         for (const [id, action] of Object.entries(buttons)) {
@@ -50,6 +66,7 @@ export class MenuScene extends Phaser.Scene {
     }
 
     showLeaderboard() {
+        const { width, height } = this.scale;
         const highScores = JSON.parse(localStorage.getItem('highScores') || '{}');
         let scoresHTML = '';
         for (let i = 1; i <= 5; i++) {
@@ -57,16 +74,18 @@ export class MenuScene extends Phaser.Scene {
         }
 
         const leaderboardModal = `
-            <div class="glass-panel" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; padding: 2rem; color: white; text-align: center; z-index: 100;">
-                <h2 style="font-family: 'Orbitron', sans-serif; font-size: 2rem; color: #00f2ff; margin-bottom: 1.5rem;">Leaderboard</h2>
-                <div style="margin-bottom: 2rem;">
-                    ${scoresHTML}
+            <div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); pointer-events: auto;">
+                <div class="glass-panel" style="width: 400px; padding: 2rem; color: white; text-align: center;">
+                    <h2 style="font-family: 'Orbitron', sans-serif; font-size: 2rem; color: #00f2ff; margin-bottom: 1.5rem;">Leaderboard</h2>
+                    <div style="margin-bottom: 2rem;">
+                        ${scoresHTML}
+                    </div>
+                    <button id="close-leaderboard" class="glass-button" style="width: auto; padding: 0.5rem 2rem; margin: 0 auto;">Close</button>
                 </div>
-                <button id="close-leaderboard" class="glass-button" style="width: auto; padding: 0.5rem 2rem; margin: 0 auto;">Close</button>
             </div>
         `;
 
-        const modal = this.add.dom(0, 0).createFromHTML(leaderboardModal).setOrigin(0);
+        const modal = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(leaderboardModal);
         modal.getChildByID('close-leaderboard').addEventListener('click', () => {
             modal.destroy();
         });

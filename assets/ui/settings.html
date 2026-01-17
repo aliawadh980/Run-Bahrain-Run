@@ -1,0 +1,74 @@
+<div id="settings-container" class="w-[1024px] h-[768px] flex items-center justify-center bg-black/50">
+    <div class="glass-panel" style="width: 100%; max-width: 500px;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 class="glow-text" style="font-family: 'Orbitron', sans-serif; font-size: 3rem; color: #00f2ff; text-transform: uppercase; margin: 0;">
+                Settings
+            </h1>
+            <div style="height: 2px; width: 60px; background: #00f2ff; margin: 0.5rem auto; opacity: 0.5;"></div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 3rem;">
+            <!-- Master Volume -->
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; font-family: 'Orbitron', sans-serif; font-size: 0.9rem;">
+                    <span>MASTER VOLUME</span>
+                    <span id="master-val">100%</span>
+                </div>
+                <input type="range" id="master-volume" min="0" max="1" step="0.1" value="1" style="width: 100%; accent-color: #00f2ff;">
+            </div>
+
+            <!-- Music Volume -->
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; font-family: 'Orbitron', sans-serif; font-size: 0.9rem;">
+                    <span>MUSIC</span>
+                    <span id="music-val">100%</span>
+                </div>
+                <input type="range" id="music-volume" min="0" max="1" step="0.1" value="1" style="width: 100%; accent-color: #00f2ff;">
+            </div>
+
+            <!-- SFX Volume -->
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; font-family: 'Orbitron', sans-serif; font-size: 0.9rem;">
+                    <span>SFX</span>
+                    <span id="sfx-val">100%</span>
+                </div>
+                <input type="range" id="sfx-volume" min="0" max="1" step="0.1" value="1" style="width: 100%; accent-color: #00f2ff;">
+            </div>
+
+            <!-- Mute Toggle -->
+            <div style="display: flex; justify-content: space-between; align-items: center; font-family: 'Orbitron', sans-serif;">
+                <span>MUTE ALL</span>
+                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                    <input type="checkbox" id="mute-toggle" style="opacity: 0; width: 0; height: 0;">
+                    <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border: 1px solid rgba(0,242,255,0.5); border-radius: 34px;"></span>
+                </label>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <button id="close-settings" class="glass-button">SAVE & BACK</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    #mute-toggle:checked + .slider {
+        background-color: #00f2ff;
+        box-shadow: 0 0 10px #00f2ff;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    #mute-toggle:checked + .slider:before {
+        transform: translateX(26px);
+        background-color: #020617;
+    }
+</style>

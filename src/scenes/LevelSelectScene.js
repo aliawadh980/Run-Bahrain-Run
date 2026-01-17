@@ -19,7 +19,7 @@ export class LevelSelectScene extends Phaser.Scene {
             </div>
         `;
 
-        const container = this.add.dom(width / 2, height / 2).createFromHTML(containerHTML);
+        const container = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(containerHTML);
         const contentArea = container.getChildByID('level-select-content');
 
         // Load the actual content from cache
