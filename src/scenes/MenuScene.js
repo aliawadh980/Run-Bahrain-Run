@@ -5,14 +5,26 @@ export class MenuScene extends Phaser.Scene {
 
     create() {
         const { width, height } = this.scale;
-        this.add.image(width / 2, height / 2, 'background1').setAlpha(0.5).setDisplaySize(width, height);
 
-        this.load.html('menu', 'assets/ui/menu.html');
-        this.load.once('complete', () => {
-            const menu = this.add.dom(width / 2, height / 2).createFromCache('menu');
-            this.setupMenuButtons(menu);
-        });
-        this.load.start();
+        const menuHTML = `
+            <main class="relative z-10 w-full max-w-4xl px-6 flex flex-col items-center">
+                <header class="text-center mb-16">
+                    <h1 class="font-display text-5xl md:text-8xl font-black italic tracking-tighter text-primary glow-text uppercase">
+                        Bahrain Quest
+                        <span class="block text-4xl md:text-6xl mt-2 text-white dark:text-white/90 tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">2026</span>
+                    </h1>
+                </header>
+                <nav class="flex flex-col gap-6 w-full max-w-md">
+                    <button id="start-game" class="glass-button py-4 px-8">Start Game</button>
+                    <button id="leaderboard" class="glass-button py-4 px-8">Leaderboard</button>
+                    <button id="how-to-play" class="glass-button py-4 px-8">How to Play</button>
+                    <button id="settings" class="glass-button py-4 px-8">Settings</button>
+                </nav>
+            </main>
+        `;
+
+        const menu = this.add.dom(width / 2, height / 2).createFromHTML(menuHTML);
+        this.setupMenuButtons(menu);
     }
 
     setupMenuButtons(menu) {
