@@ -11,6 +11,9 @@ const config = {
     height: 768,
     parent: 'game-container',
     transparent: true,
+    dom: {
+        createContainer: true
+    },
     resolution: window.devicePixelRatio || 1,
     physics: {
         default: 'arcade',
