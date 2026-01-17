@@ -53,6 +53,13 @@ export const LevelData = {
             { x: 4000, y: 500, type: 'drone', range: 300 },
             { x: 5000, y: 500, type: 'drone', range: 300 }
         ],
+        decorations: [
+            { x: 200, y: 568, type: 'deco_palm' },
+            { x: 1500, y: 568, type: 'deco_palm' },
+            { x: 3000, y: 568, type: 'deco_palm' },
+            { x: 255, y: 150, type: 'deco_turbine' },
+            { x: 375, y: 150, type: 'deco_turbine' }
+        ],
         goal: { x: 7800, y: 500, type: 'goal' }
     },
     2: {
@@ -101,6 +108,12 @@ export const LevelData = {
             { x: 4200, y: 500, type: 'sprite', range: 150 },
             { x: 5400, y: 500, type: 'sprite', range: 150 }
         ],
+        decorations: [
+            { x: 400, y: 400, type: 'deco_lantern' },
+            { x: 1200, y: 350, type: 'deco_lantern' },
+            { x: 2500, y: 300, type: 'deco_lantern' },
+            { x: 4500, y: 400, type: 'deco_lantern' }
+        ],
         goal: { x: 8800, y: 500, type: 'key' }
     },
     3: {
@@ -142,6 +155,11 @@ export const LevelData = {
             { x: 2800, y: 450, type: 'drone', range: 100 },
             { x: 4400, y: 500, type: 'drone', range: 200 },
             { x: 7200, y: 500, type: 'drone', range: 300 }
+        ],
+        decorations: [
+            { x: 100, y: 568, type: 'deco_palm' },
+            { x: 4200, y: 568, type: 'deco_palm' },
+            { x: 6800, y: 568, type: 'deco_palm' }
         ],
         goal: { x: 9800, y: 500, type: 'goal' }
     },
@@ -213,6 +231,11 @@ export const LevelData = {
             { x: 6000, y: 450, type: 'drone', range: 300, vertical: true },
             { x: 7000, y: 450, type: 'drone', range: 300, vertical: true },
             { x: 8000, y: 500, type: 'drone', range: 500 }
+        ],
+        decorations: [
+            { x: 400, y: 300, type: 'deco_turbine' },
+            { x: 4000, y: 200, type: 'deco_turbine' },
+            { x: 8000, y: 300, type: 'deco_turbine' }
         ],
         goal: { x: 11800, y: 500, type: 'goal' }
     }

@@ -41,9 +41,9 @@ export class BootScene extends Phaser.Scene {
             console.log('Audio asset "bgm_menu" loaded successfully.');
         });
 
-        // Load Images
+        // Load Images at 4x resolution for high-DPI screens
         for (let key in Assets.images) {
-            this.load.svg(key, Assets.images[key]);
+            this.load.svg(key, Assets.images[key], { scale: 4 });
         }
 
         // Load Audio

@@ -23,7 +23,10 @@ export const Assets = {
         speed: 'assets/images/speed.svg',
         doublejump: 'assets/images/doublejump.svg',
         goal: 'assets/images/goal.svg',
-        key: 'assets/images/key.svg'
+        key: 'assets/images/key.svg',
+        deco_palm: 'assets/images/deco_palm.svg',
+        deco_lantern: 'assets/images/deco_lantern.svg',
+        deco_turbine: 'assets/images/deco_turbine.svg'
     },
     sounds: {
         bgm_menu: 'assets/audio/bgm_menu.wav',

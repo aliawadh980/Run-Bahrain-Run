@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="32" cy="32" r="4" fill="#888" />
+  <path d="M32 32 L32 4 M32 32 L6 48 M32 32 L58 48" stroke="#00ffff" stroke-width="2" opacity="0.6">
+    <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="3s" repeatCount="indefinite" />
+  </path>
+</svg>

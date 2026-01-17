@@ -26,6 +26,7 @@ export class GameScene extends Phaser.Scene {
         this.createParallaxBackground(levelWidth, height);
 
         // 2. Groups
+        this.decorations = this.add.group();
         this.platforms = this.physics.add.staticGroup();
         this.collectibles = this.physics.add.group();
         this.enemies = this.physics.add.group();
@@ -36,6 +37,7 @@ export class GameScene extends Phaser.Scene {
 
         // 4. Player
         this.player = this.physics.add.sprite(100, 450, 'player');
+        this.player.setDisplaySize(32, 64);
         this.player.setBounce(0.1);
         this.player.setCollideWorldBounds(false);
 
@@ -71,6 +73,11 @@ export class GameScene extends Phaser.Scene {
         // 9. Goal
         const goalTexture = this.data.goal.type === 'key' ? 'key' : 'goal';
         this.goal = this.physics.add.staticSprite(this.data.goal.x, this.data.goal.y, goalTexture);
+        if (this.data.goal.type === 'key') {
+            this.goal.setDisplaySize(48, 48);
+        } else {
+            this.goal.setDisplaySize(64, 64);
+        }
         this.physics.add.overlap(this.player, this.goal, this.levelComplete, null, this);
 
         // 10. Particles
@@ -148,24 +155,38 @@ export class GameScene extends Phaser.Scene {
     }
 
     buildLevel() {
+        if (this.data.decorations) {
+            this.data.decorations.forEach(d => {
+                const deco = this.add.image(d.x, d.y, d.type).setOrigin(0.5, 1);
+                if (d.type === 'deco_palm') deco.setDisplaySize(64, 128);
+                else if (d.type === 'deco_lantern') deco.setDisplaySize(32, 48);
+                else if (d.type === 'deco_turbine') deco.setDisplaySize(64, 64);
+            });
+        }
+
         this.data.platforms.forEach(p => {
             const platform = this.platforms.create(p.x + (p.width || 64) / 2, p.y, 'ground');
-            if (p.width) platform.setDisplaySize(p.width, 64);
+            platform.setDisplaySize(p.width || 64, 64);
             platform.refreshBody();
         });
 
         this.data.collectibles.forEach(c => {
-            this.collectibles.create(c.x, c.y, c.type);
+            const collectible = this.collectibles.create(c.x, c.y, c.type);
+            collectible.setDisplaySize(32, 32);
         });
 
         if (this.data.powerups) {
             this.data.powerups.forEach(p => {
-                this.powerups.create(p.x, p.y, p.type);
+                const powerup = this.powerups.create(p.x, p.y, p.type);
+                powerup.setDisplaySize(48, 48);
             });
         }
 
         this.data.enemies.forEach(e => {
             const enemy = this.enemies.create(e.x, e.y, e.type);
+            if (e.type === 'drone') enemy.setDisplaySize(48, 32);
+            else enemy.setDisplaySize(32, 32);
+
             enemy.setBounce(1);
             enemy.setCollideWorldBounds(true);
 

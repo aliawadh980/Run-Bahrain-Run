@@ -1,1 +1,9 @@
-<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" fill="#aaa" opacity="0.6" /><circle cx="10" cy="12" r="2" fill="#fff" /><circle cx="22" cy="12" r="2" fill="#fff" /></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="16" cy="16" r="12" fill="#00ffff" opacity="0.4">
+    <animate attributeName="r" values="12;14;12" dur="2s" repeatCount="indefinite" />
+  </circle>
+  <rect x="10" y="10" width="4" height="4" fill="#fff" />
+  <rect x="18" y="10" width="4" height="4" fill="#fff" />
+  <path d="M12 22 Q16 26 20 22" stroke="#fff" stroke-width="2" fill="none" />
+</svg>

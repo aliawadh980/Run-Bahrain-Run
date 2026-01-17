@@ -1,1 +1,11 @@
-<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg"><rect width="800" height="600" fill="#001" /><circle cx="400" cy="300" r="200" stroke="#0ff" fill="none" opacity="0.1" /></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#000011" />
+  <!-- Holographic Grid -->
+  <path d="M0 300 L800 300 M0 400 L800 400 M0 500 L800 500" stroke="#00ffff" stroke-width="0.5" opacity="0.2" />
+  <path d="M100 0 L100 600 M300 0 L300 600 M500 0 L500 600 M700 0 L700 600" stroke="#00ffff" stroke-width="0.5" opacity="0.2" />
+  <!-- Floating structures -->
+  <rect x="200" y="100" width="400" height="100" rx="50" fill="none" stroke="#00ffff" stroke-width="2" opacity="0.5" />
+  <circle cx="400" cy="300" r="150" fill="none" stroke="#ff00ff" stroke-width="1" opacity="0.3" />
+  <text x="400" y="160" font-family="Arial" font-size="40" fill="#00ffff" text-anchor="middle" opacity="0.8">BAHRAIN 2026</text>
+</svg>
