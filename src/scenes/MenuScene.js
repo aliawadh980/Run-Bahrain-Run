@@ -7,27 +7,27 @@ export class MenuScene extends Phaser.Scene {
         const { width, height } = this.scale;
 
         // Background
-        this.add.image(width / 2, height / 2, 'background1').setAlpha(0.5);
+        this.add.image(width / 2, height / 2, 'background1').setAlpha(0.5).setDisplaySize(width, height);
 
         // Title
-        this.add.text(width / 2, height * 0.3, 'BAHRAIN QUEST 2026', {
-            fontSize: '64px',
+        this.add.text(width / 2, height * 0.25, 'BAHRAIN QUEST 2026', {
+            fontSize: '72px',
             fill: '#fff',
             fontStyle: 'bold',
             stroke: '#00ffff',
-            strokeThickness: 6
-        }).setOrigin(0.5);
+            strokeThickness: 8
+        }).setOrigin(0.5).setResolution(2);
 
         // Buttons
-        this.createButton(width / 2, height * 0.55, 'START GAME', () => {
+        this.createButton(width / 2, height * 0.5, 'START GAME', () => {
             this.scene.start('LevelSelectScene');
         });
 
-        this.createButton(width / 2, height * 0.65, 'LEADERBOARD', () => {
+        this.createButton(width / 2, height * 0.62, 'LEADERBOARD', () => {
             this.showLeaderboard();
         });
 
-        this.createButton(width / 2, height * 0.75, 'HOW TO PLAY', () => {
+        this.createButton(width / 2, height * 0.74, 'HOW TO PLAY', () => {
             this.showHowToPlay();
         });
 
@@ -42,6 +42,7 @@ export class MenuScene extends Phaser.Scene {
             backgroundColor: '#00ffff44',
             padding: { x: 20, y: 10 }
         })
+        .setResolution(2)
         .setOrigin(0.5)
         .setInteractive({ useHandCursor: true })
         .on('pointerdown', callback)
@@ -56,14 +57,14 @@ export class MenuScene extends Phaser.Scene {
         const overlay = this.add.container(0, 0).setDepth(10);
 
         overlay.add(this.add.rectangle(width / 2, height / 2, width * 0.8, height * 0.8, 0x000000, 0.9).setOrigin(0.5));
-        overlay.add(this.add.text(width / 2, height * 0.2, 'LOCAL LEADERBOARD', { fontSize: '32px', fill: '#0ff' }).setOrigin(0.5));
+        overlay.add(this.add.text(width / 2, height * 0.2, 'LOCAL LEADERBOARD', { fontSize: '32px', fill: '#0ff' }).setOrigin(0.5).setResolution(2));
 
         const highScores = JSON.parse(localStorage.getItem('highScores') || '{}');
         let yPos = height * 0.35;
 
         for (let i = 1; i <= 5; i++) {
             const score = highScores[i] || 0;
-            overlay.add(this.add.text(width / 2, yPos, `Level ${i}: ${score}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5));
+            overlay.add(this.add.text(width / 2, yPos, `Level ${i}: ${score}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5).setResolution(2));
             yPos += 40;
         }
 
@@ -94,13 +95,13 @@ export class MenuScene extends Phaser.Scene {
         - Shield: Protects from one hit
         `;
 
-        overlay.add(this.add.text(width / 2, height / 2, helpText, {
-            fontSize: '20px',
+        overlay.add(this.add.text(width / 2, height * 0.42, helpText, {
+            fontSize: '22px',
             fill: '#fff',
             align: 'center',
             lineSpacing: 10
-        }).setOrigin(0.5));
+        }).setOrigin(0.5).setResolution(2));
 
-        overlay.add(this.createButton(width / 2, height * 0.8, 'CLOSE', () => overlay.destroy()));
+        overlay.add(this.createButton(width / 2, height * 0.88, 'CLOSE', () => overlay.destroy()));
     }
 }

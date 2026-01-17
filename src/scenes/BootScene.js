@@ -6,31 +6,35 @@ export class BootScene extends Phaser.Scene {
     }
 
     preload() {
-        const width = this.cameras.main.width;
-        const height = this.cameras.main.height;
+        const width = this.scale.width;
+        const height = this.scale.height;
 
         const progressBar = this.add.graphics();
         const progressBox = this.add.graphics();
         progressBox.fillStyle(0x222222, 0.8);
-        progressBox.fillRect(240, 270, 320, 50);
+        progressBox.fillRect(width / 2 - 160, height / 2 - 25, 320, 50);
 
         const loadingText = this.make.text({
             x: width / 2,
-            y: height / 2 - 50,
+            y: height / 2 - 80,
             text: 'Loading...',
-            style: { font: '20px monospace', fill: '#ffffff' }
-        }).setOrigin(0.5);
+            style: { font: '24px monospace', fill: '#ffffff' }
+        }).setOrigin(0.5).setResolution(2);
 
         this.load.on('progress', (value) => {
             progressBar.clear();
             progressBar.fillStyle(0x00ffff, 1);
-            progressBar.fillRect(250, 280, 300 * value, 30);
+            progressBar.fillRect(width / 2 - 150, height / 2 - 15, 300 * value, 30);
         });
 
         this.load.on('complete', () => {
             progressBar.destroy();
             progressBox.destroy();
             loadingText.destroy();
+        });
+
+        this.load.on('loaderror', (file) => {
+            console.warn('Error loading asset:', file.key, file.src);
         });
 
         // Load Images

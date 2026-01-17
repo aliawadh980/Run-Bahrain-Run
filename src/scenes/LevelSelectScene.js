@@ -6,8 +6,8 @@ export class LevelSelectScene extends Phaser.Scene {
     create() {
         const { width, height } = this.scale;
 
-        this.add.text(width / 2, 80, 'BAHRAIN QUEST 2026', { fontSize: '40px', fill: '#0ff' }).setOrigin(0.5);
-        this.add.text(width / 2, 140, 'Select Level', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+        this.add.text(width / 2, 80, 'BAHRAIN QUEST 2026', { fontSize: '40px', fill: '#0ff' }).setOrigin(0.5).setResolution(2);
+        this.add.text(width / 2, 140, 'Select Level', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5).setResolution(2);
 
         const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
 
@@ -23,11 +23,16 @@ export class LevelSelectScene extends Phaser.Scene {
             const isUnlocked = lvl.id === 1 || completedLevels.includes(lvl.id - 1);
             const color = isUnlocked ? '#0f0' : '#444';
 
-            const btn = this.add.text(width / 2, 220 + (index * 60), `${lvl.id}. ${lvl.name}`, {
-                fontSize: '24px',
+            // Better aligned level list
+            const xOffset = width / 2 - 200;
+            const yOffset = 250 + (index * 70);
+
+            const btn = this.add.text(xOffset, yOffset, `${lvl.id}. ${lvl.name}`, {
+                fontSize: '32px',
                 fill: color
             })
-            .setOrigin(0.5)
+            .setOrigin(0, 0.5)
+            .setResolution(2)
             .setInteractive({ useHandCursor: isUnlocked });
 
             if (isUnlocked) {
@@ -35,15 +40,16 @@ export class LevelSelectScene extends Phaser.Scene {
                     this.scene.start('GameScene', { level: lvl.id });
                 });
 
-                btn.on('pointerover', () => btn.setScale(1.1));
+                btn.on('pointerover', () => btn.setScale(1.05));
                 btn.on('pointerout', () => btn.setScale(1));
             } else {
-                this.add.text(width / 2 + 200, 220 + (index * 60), 'Locked', { fontSize: '16px', fill: '#666' }).setOrigin(0.5);
+                this.add.text(xOffset + 400, yOffset, 'Locked', { fontSize: '20px', fill: '#666' }).setOrigin(0, 0.5).setResolution(2);
             }
         });
 
         const backBtn = this.add.text(width / 2, height - 50, 'Back to Menu', { fontSize: '20px', fill: '#aaa' })
             .setOrigin(0.5)
+            .setResolution(2)
             .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => this.scene.start('MenuScene'));
     }
