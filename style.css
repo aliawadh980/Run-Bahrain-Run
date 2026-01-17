@@ -1,21 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+
 body {
     margin: 0;
     padding: 0;
-    background-color: #1a1a1a;
+    background-color: #020617 !important;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Rajdhani', sans-serif;
+    color: white !important;
 }
 
 #game-container {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+    width: 1024px;
+    height: 768px;
+    box-shadow: 0 0 50px rgba(0, 242, 255, 0.2);
     border-radius: 8px;
     overflow: hidden;
+    background: #020617; /* Fallback dark blue */
 }
 
 canvas {
     display: block;
+}
+
+/* UI Elements */
+.glow-text {
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.8),
+                 0 0 20px rgba(0, 242, 255, 0.5),
+                 0 0 30px rgba(0, 242, 255, 0.3);
+}
+
+.glass-button {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 242, 255, 0.5);
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: block;
+}
+
+.glass-button:hover {
+    background: rgba(0, 242, 255, 0.2);
+    border-color: #00f2ff;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
+    transform: translateY(-2px);
+    color: #00f2ff;
+}
+
+.glass-panel {
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(16px);
+    border: 2px solid #00f2ff;
+    box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+/* Level Cards */
+#level-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    width: 100%;
+}
+
+.level-card {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(0, 242, 255, 0.2);
+    border-radius: 1rem;
+    width: 200px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.level-card.locked {
+    opacity: 0.5;
+    filter: grayscale(1);
+    cursor: not-allowed;
+}
+
+.level-card.unlocked:hover {
+    transform: translateY(-10px);
+    border-color: #00f2ff;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+}
+
+.card-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 242, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.card-icon .material-icons {
+    font-size: 2rem;
+    color: #00f2ff;
+}
+
+.card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    margin: 0.5rem 0;
+    color: white;
+}
+
+.card-desc {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+}
+
+.card-status {
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(0, 242, 255, 0.2);
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: #00f2ff;
+}
+
+.unlocked .card-status {
+    background: #00f2ff;
+    color: #020617;
+}
+
+.check-mark {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    color: #00f2ff;
+    font-weight: bold;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+    background: #00f2ff;
+    border-radius: 4px;
 }

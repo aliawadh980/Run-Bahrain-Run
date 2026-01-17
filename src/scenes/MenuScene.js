@@ -6,84 +6,131 @@ export class MenuScene extends Phaser.Scene {
     create() {
         const { width, height } = this.scale;
 
-        const menuHTML = `
-            <main class="relative z-10 w-full max-w-4xl px-6 flex flex-col items-center">
-                <header class="text-center mb-16">
-                    <h1 class="font-display text-5xl md:text-8xl font-black italic tracking-tighter text-primary glow-text uppercase">
-                        Bahrain Quest
-                        <span class="block text-4xl md:text-6xl mt-2 text-white dark:text-white/90 tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">2026</span>
-                    </h1>
-                </header>
-                <nav class="flex flex-col gap-6 w-full max-w-md">
-                    <button id="start-game" class="glass-button py-4 px-8">Start Game</button>
-                    <button id="leaderboard" class="glass-button py-4 px-8">Leaderboard</button>
-                    <button id="how-to-play" class="glass-button py-4 px-8">How to Play</button>
-                    <button id="settings" class="glass-button py-4 px-8">Settings</button>
-                </nav>
-            </main>
-        `;
+        // Background
+        this.add.image(width / 2, height / 2, 'background1')
+            .setDisplaySize(width, height)
+            .setAlpha(0.5);
 
-        const menu = this.add.dom(width / 2, height / 2).createFromHTML(menuHTML);
-        this.setupMenuButtons(menu);
-    }
-
-    setupMenuButtons(menu) {
-        const unlockAudio = () => {
-            if (this.sound.context && this.sound.context.state === 'suspended') {
-                this.sound.context.resume();
-            }
-            this.safePlaySound('bgm_menu', { loop: true, volume: 0.3 });
-        };
-
-        const startGameBtn = menu.getChildByID('start-game');
-        startGameBtn.addEventListener('click', () => {
-            unlockAudio();
-            this.scene.start('LevelSelectScene');
-        });
-
-        const leaderboardBtn = menu.getChildByID('leaderboard');
-        leaderboardBtn.addEventListener('click', () => {
-            unlockAudio();
-            this.showLeaderboard();
-        });
-
-        const howToPlayBtn = menu.getChildByID('how-to-play');
-        howToPlayBtn.addEventListener('click', () => {
-            unlockAudio();
-            this.scene.start('InstructionsScene');
-        });
-
-        const settingsBtn = menu.getChildByID('settings');
-        settingsBtn.addEventListener('click', () => {
-            unlockAudio();
-            // Placeholder for settings
-        });
-    }
-
-    showLeaderboard() {
-        const highScores = JSON.parse(localStorage.getItem('highScores') || '{}');
-        let scoresHTML = '';
-        for (let i = 1; i <= 5; i++) {
-            scoresHTML += `<p>Level ${i}: ${highScores[i] || 0}</p>`;
-        }
-
-        const leaderboardModal = `
-            <div id="leaderboard-modal" class="glass-panel" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; z-index: 100; padding: 2rem;">
-                <h2 style="font-size: 2rem; color: var(--primary); text-align: center; margin-bottom: 1.5rem;">Leaderboard</h2>
-                ${scoresHTML}
-                <button id="close-leaderboard" class="glass-button" style="margin-top: 1.5rem; display: block; margin-left: auto; margin-right: auto;">Close</button>
+        const containerHTML = `
+            <div style="width: ${width}px; height: ${height}px; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; position: relative;">
+                <div id="menu-content" style="pointer-events: auto; width: 100%; display: flex; flex-direction: column; align-items: center;">
+                </div>
             </div>
         `;
 
-        const modal = this.add.dom(0, 0).createFromHTML(leaderboardModal).setOrigin(0);
+        const container = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(containerHTML);
+        const contentArea = container.getChildByID('menu-content');
+
+        // Load content from cache as HTML string
+        contentArea.innerHTML = this.cache.html.get('menu');
+
+        this.setupMenuButtons(container);
+    }
+
+    setupMenuButtons(container) {
+        const manageMusic = () => {
+            if (this.sound.context && this.sound.context.state === 'suspended') {
+                this.sound.context.resume();
+            }
+
+            // Get existing instances of menu music
+            const bgms = this.sound.getAll('bgm_menu');
+
+            // Stop and remove all but one if multiple exist
+            if (bgms.length > 1) {
+                bgms.forEach((s, index) => {
+                    if (index > 0) {
+                        s.stop();
+                        this.sound.remove(s);
+                    }
+                });
+            }
+
+            const menuBgm = this.sound.get('bgm_menu');
+            const settings = JSON.parse(localStorage.getItem('gameSettings') || '{"music": 1}');
+            const targetVolume = (settings.music !== undefined ? settings.music : 1) * 0.3;
+
+            // If music is already playing, just update volume and return
+            if (menuBgm && menuBgm.isPlaying) {
+                menuBgm.setVolume(targetVolume);
+                return;
+            }
+
+            // Stop any other BGMs (from levels)
+            this.sound.getAllPlaying().forEach(s => {
+                if (s.key.startsWith('bgm_') && s.key !== 'bgm_menu') {
+                    s.stop();
+                }
+            });
+
+            // Play menu music
+            this.safePlaySound('bgm_menu', {
+                loop: true,
+                volume: targetVolume
+            });
+        };
+
+        const buttons = {
+            'start-game': () => this.scene.start('LevelSelectScene'),
+            'leaderboard': () => this.showLeaderboard(),
+            'how-to-play': () => this.scene.start('InstructionsScene'),
+            'settings': () => this.scene.start('SettingsScene')
+        };
+
+        for (const [id, action] of Object.entries(buttons)) {
+            const btn = container.getChildByID(id);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    this.safePlaySound('collect', { volume: 0.5 });
+                    manageMusic();
+                    action();
+                });
+            }
+        }
+
+        // Also try to start music immediately on scene creation (might be blocked by browser)
+        manageMusic();
+    }
+
+    showLeaderboard() {
+        if (this.leaderboardOpen) return;
+        this.leaderboardOpen = true;
+
+        const { width, height } = this.scale;
+        const highScores = JSON.parse(localStorage.getItem('highScores') || '{}');
+        let scoresHTML = '';
+        for (let i = 1; i <= 5; i++) {
+            scoresHTML += `<p style="margin: 0.5rem 0; font-size: 1.2rem;">Level ${i}: ${highScores[i] || 0}</p>`;
+        }
+
+        const leaderboardModal = `
+            <div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); pointer-events: auto;">
+                <div class="glass-panel" style="width: 400px; padding: 2rem; color: white; text-align: center;">
+                    <h2 style="font-family: 'Orbitron', sans-serif; font-size: 2rem; color: #00f2ff; margin-bottom: 1.5rem;">Leaderboard</h2>
+                    <div style="margin-bottom: 2rem;">
+                        ${scoresHTML}
+                    </div>
+                    <button id="close-leaderboard" class="glass-button" style="width: auto; padding: 0.5rem 2rem; margin: 0 auto;">Close</button>
+                </div>
+            </div>
+        `;
+
+        const modal = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(leaderboardModal);
         modal.getChildByID('close-leaderboard').addEventListener('click', () => {
+            this.safePlaySound('collect', { volume: 0.5 });
+            this.leaderboardOpen = false;
             modal.destroy();
         });
     }
 
     safePlaySound(key, config) {
         if (this.cache.audio.exists(key)) {
-            this.sound.play(key, config);
+            const settings = JSON.parse(localStorage.getItem('gameSettings') || '{"sfx": 1}');
+            const finalConfig = config || {};
+            if (!key.startsWith('bgm_')) {
+                finalConfig.volume = (finalConfig.volume || 1) * (settings.sfx !== undefined ? settings.sfx : 1);
+            }
+            this.sound.play(key, finalConfig);
         }
     }
 }

@@ -92,13 +92,22 @@ export class GameScene extends Phaser.Scene {
         if (this.level === 2) levelBgm = 'bgm_level2';
         else if (this.level >= 3) levelBgm = 'bgm_level3';
 
-        this.safePlaySound(levelBgm, { loop: true, volume: 0.3 });
+        const settings = JSON.parse(localStorage.getItem('gameSettings') || '{"music": 1}');
+        this.safePlaySound(levelBgm, {
+            loop: true,
+            volume: (settings.music !== undefined ? settings.music : 1) * 0.3
+        });
     }
 
     safePlaySound(key, config) {
         try {
             if (this.cache.audio.exists(key)) {
-                this.sound.play(key, config);
+                const settings = JSON.parse(localStorage.getItem('gameSettings') || '{"sfx": 1}');
+                const finalConfig = config || {};
+                if (!key.startsWith('bgm_')) {
+                    finalConfig.volume = (finalConfig.volume || 1) * (settings.sfx !== undefined ? settings.sfx : 1);
+                }
+                this.sound.play(key, finalConfig);
             } else {
                 console.warn(`Audio key "${key}" missing from cache.`);
             }
