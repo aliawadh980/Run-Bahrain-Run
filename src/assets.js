@@ -19,10 +19,10 @@ export const Assets = {
         goal: 'assets/images/goal.svg'
     },
     sounds: {
-        bgm: 'https://labs.phaser.io/assets/audio/Dancer-Chiptune.mp3',
+        bgm: 'https://labs.phaser.io/assets/audio/jungle.mp3',
         jump: 'https://labs.phaser.io/assets/audio/SoundEffects/p-ping.mp3',
-        collect: 'https://labs.phaser.io/assets/audio/SoundEffects/coin.mp3',
-        win: 'https://labs.phaser.io/assets/audio/SoundEffects/beaming.mp3',
+        collect: 'https://labs.phaser.io/assets/audio/SoundEffects/squit.mp3',
+        win: 'https://labs.phaser.io/assets/audio/SoundEffects/squit.mp3',
         lose: 'https://labs.phaser.io/assets/audio/SoundEffects/explosion.mp3'
     }
 };

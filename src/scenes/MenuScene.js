@@ -19,18 +19,24 @@ export class MenuScene extends Phaser.Scene {
         }).setOrigin(0.5).setResolution(2);
 
         // Buttons
-        this.createButton(width / 2, height * 0.5, 'START GAME', () => {
-            if (this.sound.context.state === 'suspended') {
+        const unlockAudio = () => {
+            if (this.sound.context && this.sound.context.state === 'suspended') {
                 this.sound.context.resume();
             }
+        };
+
+        this.createButton(width / 2, height * 0.5, 'START GAME', () => {
+            unlockAudio();
             this.scene.start('LevelSelectScene');
         });
 
         this.createButton(width / 2, height * 0.62, 'LEADERBOARD', () => {
+            unlockAudio();
             this.showLeaderboard();
         });
 
         this.createButton(width / 2, height * 0.74, 'HOW TO PLAY', () => {
+            unlockAudio();
             this.showHowToPlay();
         });
 
