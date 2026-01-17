@@ -37,8 +37,8 @@ export class BootScene extends Phaser.Scene {
             console.error('CRITICAL: Error loading asset:', file.key, file.src);
         });
 
-        this.load.on('filecomplete-audio-bgm', () => {
-            console.log('Audio asset "bgm" loaded successfully.');
+        this.load.on('filecomplete-audio-bgm_menu', () => {
+            console.log('Audio asset "bgm_menu" loaded successfully.');
         });
 
         // Load Images

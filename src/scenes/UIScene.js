@@ -75,6 +75,34 @@ export class UIScene extends Phaser.Scene {
             this.scene.start('MenuScene');
         });
         this.resultContainer.add(this.btnHome);
+
+        // 3. Pause Menu Container
+        this.pauseContainer = this.add.container(0, 0).setVisible(false).setDepth(2000);
+        this.pauseContainer.add(this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.6).setInteractive());
+
+        this.pauseContainer.add(this.add.text(width / 2, height * 0.35, 'PAUSED', {
+            fontSize: '80px',
+            fill: '#fff'
+        }).setOrigin(0.5).setResolution(2));
+
+        this.pauseContainer.add(this.add.text(width / 2, height * 0.55, 'Game is paused', { fontSize: '24px', fill: '#aaa' }).setOrigin(0.5).setResolution(2));
+
+        const btnResume = this.add.text(width / 2, height * 0.7, 'RESUME', {
+            fontSize: '32px', backgroundColor: '#0f0', fill: '#000', padding: { x: 30, y: 15 }
+        })
+        .setOrigin(0.5).setResolution(2).setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => this.togglePause());
+        this.pauseContainer.add(btnResume);
+
+        const btnQuit = this.add.text(width / 2, height * 0.82, 'QUIT TO MENU', {
+            fontSize: '24px', fill: '#f00'
+        })
+        .setOrigin(0.5).setResolution(2).setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => {
+            this.scene.stop('GameScene');
+            this.scene.start('MenuScene');
+        });
+        this.pauseContainer.add(btnQuit);
     }
 
     updateScore(score) {
@@ -104,6 +132,21 @@ export class UIScene extends Phaser.Scene {
             this.scene.start('GameScene', { level: this.level });
         } else {
             this.scene.start('LevelSelectScene');
+        }
+    }
+
+    togglePause() {
+        const gameScene = this.scene.get('GameScene');
+        if (gameScene.isGameOver) return;
+
+        if (this.pauseContainer.visible) {
+            this.pauseContainer.setVisible(false);
+            gameScene.physics.resume();
+            gameScene.isPaused = false;
+        } else {
+            this.pauseContainer.setVisible(true);
+            gameScene.physics.pause();
+            gameScene.isPaused = true;
         }
     }
 }

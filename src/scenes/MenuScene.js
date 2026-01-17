@@ -23,6 +23,9 @@ export class MenuScene extends Phaser.Scene {
             if (this.sound.context && this.sound.context.state === 'suspended') {
                 this.sound.context.resume();
             }
+            if (!this.sound.get('bgm_menu') || !this.sound.get('bgm_menu').isPlaying) {
+                this.safePlaySound('bgm_menu', { loop: true, volume: 0.3 });
+            }
         };
 
         this.createButton(width / 2, height * 0.5, 'START GAME', () => {
@@ -42,6 +45,23 @@ export class MenuScene extends Phaser.Scene {
 
         // Credits
         this.add.text(width / 2, height - 30, 'Created by AI for Bahrain 2026', { fontSize: '16px', fill: '#888' }).setOrigin(0.5);
+
+        // Auto-start music if already unlocked
+        if (this.sound.context && this.sound.context.state === 'running') {
+            if (!this.sound.get('bgm_menu') || !this.sound.get('bgm_menu').isPlaying) {
+                this.safePlaySound('bgm_menu', { loop: true, volume: 0.3 });
+            }
+        }
+    }
+
+    safePlaySound(key, config) {
+        try {
+            if (this.cache.audio.exists(key)) {
+                this.sound.play(key, config);
+            }
+        } catch (e) {
+            console.error(`Failed to play sound "${key}":`, e);
+        }
     }
 
     createButton(x, y, label, callback) {
@@ -78,6 +98,22 @@ export class MenuScene extends Phaser.Scene {
         }
 
         overlay.add(this.createButton(width / 2, height * 0.8, 'CLOSE', () => overlay.destroy()));
+
+        const resetBtn = this.add.text(width / 2, height * 0.9, 'RESET ALL DATA', {
+            fontSize: '18px',
+            fill: '#f00'
+        })
+        .setOrigin(0.5)
+        .setResolution(2)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => {
+            if (confirm('Are you sure you want to reset all progress and high scores?')) {
+                localStorage.clear();
+                overlay.destroy();
+                this.showLeaderboard();
+            }
+        });
+        overlay.add(resetBtn);
     }
 
     showHowToPlay() {

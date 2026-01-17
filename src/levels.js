@@ -1,11 +1,12 @@
+
 export const LevelData = {
     1: {
         name: 'Manama Skyline Sprint',
-        width: 6000,
+        width: 8000,
         platforms: [
             { x: 0, y: 568, width: 1200, type: 'ground' },
             { x: 1400, y: 568, width: 1000, type: 'ground' },
-            { x: 2600, y: 568, width: 3400, type: 'ground' },
+            { x: 2600, y: 568, width: 5400, type: 'ground' },
             // Elevated platforms
             { x: 400, y: 450, width: 200 },
             { x: 700, y: 350, width: 200 },
@@ -52,11 +53,11 @@ export const LevelData = {
             { x: 4000, y: 500, type: 'drone', range: 300 },
             { x: 5000, y: 500, type: 'drone', range: 300 }
         ],
-        goal: { x: 5800, y: 500 }
+        goal: { x: 7800, y: 500, type: 'goal' }
     },
     2: {
         name: 'Souq Adventure',
-        width: 7000,
+        width: 9000,
         platforms: [
             { x: 0, y: 568, width: 800, type: 'ground' },
             { x: 1000, y: 568, width: 800, type: 'ground' },
@@ -100,11 +101,11 @@ export const LevelData = {
             { x: 4200, y: 500, type: 'sprite', range: 150 },
             { x: 5400, y: 500, type: 'sprite', range: 150 }
         ],
-        goal: { x: 6800, y: 500 }
+        goal: { x: 8800, y: 500, type: 'key' }
     },
     3: {
         name: 'Amwaj Islands Dash',
-        width: 8000,
+        width: 10000,
         platforms: [
             { x: 0, y: 568, width: 400, type: 'ground' },
             { x: 600, y: 500, width: 200 },
@@ -142,11 +143,11 @@ export const LevelData = {
             { x: 4400, y: 500, type: 'drone', range: 200 },
             { x: 7200, y: 500, type: 'drone', range: 300 }
         ],
-        goal: { x: 7800, y: 500 }
+        goal: { x: 9800, y: 500, type: 'goal' }
     },
     4: {
         name: 'Desert of the Future',
-        width: 9000,
+        width: 10000,
         platforms: [
             { x: 0, y: 568, width: 500, type: 'ground' },
             { x: 700, y: 450, width: 150 },
@@ -160,7 +161,7 @@ export const LevelData = {
             { x: 5000, y: 250, width: 200 },
             { x: 5300, y: 350, width: 200 },
             { x: 5600, y: 450, width: 200 },
-            { x: 6000, y: 568, width: 3000, type: 'ground' }
+            { x: 6000, y: 568, width: 4000, type: 'ground' }
         ],
         collectibles: [
             { x: 1350, y: 200, type: 'date' },
@@ -177,11 +178,11 @@ export const LevelData = {
             { x: 6800, y: 500, type: 'sandbot', range: 500 },
             { x: 7500, y: 500, type: 'sandbot', range: 500 }
         ],
-        goal: { x: 8800, y: 500 }
+        goal: { x: 9800, y: 500, type: 'goal' }
     },
     5: {
         name: 'Vision Hub 2026',
-        width: 10000,
+        width: 12000,
         platforms: [
             { x: 0, y: 568, width: 300, type: 'ground' },
             { x: 400, y: 450, width: 100 },
@@ -195,7 +196,7 @@ export const LevelData = {
             { x: 3300, y: 250, width: 150 },
             { x: 3600, y: 350, width: 150 },
             { x: 3900, y: 450, width: 150 },
-            { x: 4200, y: 568, width: 5800, type: 'ground' }
+            { x: 4200, y: 568, width: 7800, type: 'ground' }
         ],
         collectibles: [
             { x: 850, y: 200, type: 'pearl' },
@@ -213,6 +214,6 @@ export const LevelData = {
             { x: 7000, y: 450, type: 'drone', range: 300, vertical: true },
             { x: 8000, y: 500, type: 'drone', range: 500 }
         ],
-        goal: { x: 9800, y: 500 }
+        goal: { x: 11800, y: 500, type: 'goal' }
     }
 };

@@ -1,3 +1,4 @@
+
 import { Assets } from '../assets.js';
 import { LevelData } from '../levels.js';
 
@@ -10,6 +11,7 @@ export class GameScene extends Phaser.Scene {
         this.level = data.level || 1;
         this.score = 0;
         this.isGameOver = false;
+        this.isPaused = false;
         this.hasShield = false;
         this.canDoubleJump = false;
         this.jumpCount = 0;
@@ -51,9 +53,12 @@ export class GameScene extends Phaser.Scene {
 
         // 6. Controls
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+
         if (this.sys.game.device.input.touch) {
             this.createTouchControls();
         }
+        this.createPauseButton();
 
         // 7. UI
         this.scene.launch('UIScene', { score: this.score, level: this.level });
@@ -64,12 +69,23 @@ export class GameScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
 
         // 9. Goal
-        this.goal = this.physics.add.staticSprite(this.data.goal.x, this.data.goal.y, 'goal');
+        const goalTexture = this.data.goal.type === 'key' ? 'key' : 'goal';
+        this.goal = this.physics.add.staticSprite(this.data.goal.x, this.data.goal.y, goalTexture);
         this.physics.add.overlap(this.player, this.goal, this.levelComplete, null, this);
 
-        // 10. Music
+        // 10. Particles
+        this.createParticles();
+
+        // 11. Level Intro
+        this.showLevelIntro();
+
+        // 12. Music
         this.sound.stopAll();
-        this.safePlaySound('bgm', { loop: true, volume: 0.3 });
+        let levelBgm = 'bgm_level1';
+        if (this.level === 2) levelBgm = 'bgm_level2';
+        else if (this.level >= 3) levelBgm = 'bgm_level3';
+
+        this.safePlaySound(levelBgm, { loop: true, volume: 0.3 });
     }
 
     safePlaySound(key, config) {
@@ -77,22 +93,56 @@ export class GameScene extends Phaser.Scene {
             if (this.cache.audio.exists(key)) {
                 this.sound.play(key, config);
             } else {
-                console.warn(`Audio key "${key}" missing from cache. (CORS or Network issue?)`);
+                console.warn(`Audio key "${key}" missing from cache.`);
             }
         } catch (e) {
             console.error(`Failed to play sound "${key}":`, e);
         }
     }
 
+    showLevelIntro() {
+        const { width, height } = this.scale;
+        const container = this.add.container(0, 0).setDepth(2000).setScrollFactor(0);
+
+        const rect = this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.7);
+        const title = this.add.text(width / 2, height / 2 - 40, this.data.name, {
+            fontSize: '48px',
+            fill: '#0ff',
+            fontStyle: 'bold'
+        }).setOrigin(0.5).setResolution(2);
+
+        const sub = this.add.text(width / 2, height / 2 + 40, 'Reach the goal to build the future!', {
+            fontSize: '24px',
+            fill: '#fff'
+        }).setOrigin(0.5).setResolution(2);
+
+        container.add([rect, title, sub]);
+
+        this.time.delayedCall(2000, () => {
+            this.tweens.add({
+                targets: container,
+                alpha: 0,
+                duration: 500,
+                onComplete: () => container.destroy()
+            });
+        });
+    }
+
     createParallaxBackground(totalWidth, height) {
+        // Sky layer
+        for (let x = 0; x < totalWidth + 1024; x += 1024) {
+            this.add.image(x, height / 2, 'background0')
+                .setScrollFactor(0.1)
+                .setDisplaySize(1024, height);
+        }
+
         const bgKey = `background${this.level}`;
-        // Scale 800x600 backgrounds to fill the 1024x768 height
         const scale = height / 600;
         const bgWidth = 800 * scale;
 
         for (let x = 0; x < totalWidth + bgWidth; x += bgWidth) {
             this.add.image(x, height / 2, bgKey)
-                .setScrollFactor(0.5)
+                .setScrollFactor(0.4)
                 .setScale(scale);
         }
     }
@@ -132,6 +182,21 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
+    createPauseButton() {
+        const { width } = this.scale;
+        this.btnPause = this.add.text(width - 40, 40, '||', {
+            fontSize: '32px',
+            fill: '#fff',
+            backgroundColor: '#00000044',
+            padding: { x: 10, y: 5 }
+        })
+        .setOrigin(1, 0)
+        .setScrollFactor(0)
+        .setDepth(1000)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => this.scene.get('UIScene').togglePause());
+    }
+
     createTouchControls() {
         const { width, height } = this.scale;
         this.touchMove = { left: false, right: false, jump: false };
@@ -154,20 +219,29 @@ export class GameScene extends Phaser.Scene {
     }
 
     update() {
-        if (this.isGameOver) return;
+        if (this.isGameOver || this.isPaused) {
+            return;
+        }
 
         if (this.cursors.left.isDown || (this.touchMove && this.touchMove.left)) {
             this.player.setVelocityX(-this.player.speed);
             this.player.setFlipX(true);
+            this.animateWalk();
         } else if (this.cursors.right.isDown || (this.touchMove && this.touchMove.right)) {
             this.player.setVelocityX(this.player.speed);
             this.player.setFlipX(false);
+            this.animateWalk();
         } else {
             this.player.setVelocityX(0);
+            if (this.player.body.touching.down) {
+                this.player.setTexture('player');
+            }
         }
 
         if (this.player.body.touching.down) {
             this.jumpCount = 0;
+        } else {
+            this.player.setTexture('player_jump');
         }
 
         const isJumpJustDown = Phaser.Input.Keyboard.JustDown(this.cursors.up) || Phaser.Input.Keyboard.JustDown(this.cursors.space);
@@ -203,6 +277,36 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
+    createParticles() {
+        this.pearlParticles = this.add.particles(0, 0, 'pearl', {
+            speed: { min: -100, max: 100 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 0.2, end: 0 },
+            lifespan: 500,
+            gravityY: 200,
+            emitting: false
+        });
+
+        this.dateParticles = this.add.particles(0, 0, 'date', {
+            speed: { min: -100, max: 100 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 0.2, end: 0 },
+            lifespan: 500,
+            gravityY: 200,
+            emitting: false
+        });
+    }
+
+    animateWalk() {
+        if (!this.player.body.touching.down) return;
+        const time = this.time.now;
+        if (time > (this.lastWalkTime || 0) + 150) {
+            this.walkFrame = (this.walkFrame === 1) ? 2 : 1;
+            this.player.setTexture(`player_walk${this.walkFrame}`);
+            this.lastWalkTime = time;
+        }
+    }
+
     performJump() {
         this.player.setVelocityY(this.player.jumpForce);
         this.safePlaySound('jump');
@@ -216,6 +320,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     collectItem(player, item) {
+        const type = item.texture.key;
+        if (type === 'pearl') {
+            this.pearlParticles.emitParticleAt(item.x, item.y, 10);
+        } else if (type === 'date') {
+            this.dateParticles.emitParticleAt(item.x, item.y, 10);
+        }
+
         item.disableBody(true, true);
         this.score += 10;
         this.safePlaySound('collect');
@@ -260,6 +371,7 @@ export class GameScene extends Phaser.Scene {
             enemy.disableBody(true, true);
             this.safePlaySound('lose');
         } else {
+            this.cameras.main.shake(200, 0.02);
             this.gameOver();
         }
     }
@@ -276,6 +388,13 @@ export class GameScene extends Phaser.Scene {
     levelComplete() {
         if (this.isGameOver) return;
         this.isGameOver = true;
+
+        // Celebration!
+        this.player.setTexture('player_celebrate');
+        this.player.setVelocity(0, -500);
+        this.pearlParticles.emitParticleAt(this.player.x, this.player.y, 20);
+        this.dateParticles.emitParticleAt(this.player.x, this.player.y, 20);
+
         this.physics.pause();
         this.player.setTint(0x00ff00);
         this.safePlaySound('win');
