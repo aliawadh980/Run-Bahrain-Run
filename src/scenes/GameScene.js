@@ -270,7 +270,7 @@ export class GameScene extends Phaser.Scene {
         this.physics.pause();
         this.player.setTint(0xff0000);
         this.safePlaySound('lose');
-        this.showResultScreen('GAME OVER', 'Try again — Bahrain believes in you!', 0xff0000);
+        this.scene.get('UIScene').showResult('GAME OVER', 'Try again — Bahrain believes in you!', 0xff0000, true);
     }
 
     levelComplete() {
@@ -292,36 +292,6 @@ export class GameScene extends Phaser.Scene {
             localStorage.setItem('highScores', JSON.stringify(highScores));
         }
 
-        this.showResultScreen('LEVEL COMPLETE!', `Score: ${this.score}`, 0x00ff00);
-    }
-
-    showResultScreen(title, subtitle, color) {
-        const { width, height } = this.scale;
-        const container = this.add.container(0, 0).setScrollFactor(0).setDepth(1000);
-        container.add(this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.7));
-        container.add(this.add.text(width / 2, height * 0.4, title, {
-            fontSize: '64px',
-            fill: Phaser.Display.Color.IntegerToColor(color).rgba
-        }).setOrigin(0.5).setResolution(2));
-        container.add(this.add.text(width / 2, height * 0.55, subtitle, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5).setResolution(2));
-
-        const btnNext = this.add.text(width / 2, height * 0.7, title === 'GAME OVER' ? 'RETRY' : 'CONTINUE', {
-            fontSize: '32px', backgroundColor: '#fff', fill: '#000', padding: { x: 20, y: 10 }
-        })
-        .setOrigin(0.5).setResolution(2).setInteractive({ useHandCursor: true })
-        .on('pointerdown', () => {
-            this.scene.stop('UIScene');
-            if (title === 'GAME OVER') this.scene.restart();
-            else this.scene.start('LevelSelectScene');
-        });
-        container.add(btnNext);
-
-        const btnHome = this.add.text(width / 2, height * 0.82, 'BACK TO HOME', { fontSize: '24px', fill: '#aaa' })
-        .setOrigin(0.5).setResolution(2).setInteractive({ useHandCursor: true })
-        .on('pointerdown', () => {
-            this.scene.stop('UIScene');
-            this.scene.start('MenuScene');
-        });
-        container.add(btnHome);
+        this.scene.get('UIScene').showResult('LEVEL COMPLETE!', `Final Score: ${this.score}`, 0x00ff00, false);
     }
 }

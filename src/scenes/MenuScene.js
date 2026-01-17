@@ -20,6 +20,9 @@ export class MenuScene extends Phaser.Scene {
 
         // Buttons
         this.createButton(width / 2, height * 0.5, 'START GAME', () => {
+            if (this.sound.context.state === 'suspended') {
+                this.sound.context.resume();
+            }
             this.scene.start('LevelSelectScene');
         });
 
@@ -95,13 +98,13 @@ export class MenuScene extends Phaser.Scene {
         - Shield: Protects from one hit
         `;
 
-        overlay.add(this.add.text(width / 2, height * 0.42, helpText, {
-            fontSize: '22px',
+        overlay.add(this.add.text(width / 2, height * 0.45, helpText, {
+            fontSize: '20px',
             fill: '#fff',
             align: 'center',
-            lineSpacing: 10
+            lineSpacing: 8
         }).setOrigin(0.5).setResolution(2));
 
-        overlay.add(this.createButton(width / 2, height * 0.88, 'CLOSE', () => overlay.destroy()));
+        overlay.add(this.createButton(width / 2, height * 0.9, 'CLOSE', () => overlay.destroy()));
     }
 }
