@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dunes -->
+  <path d="M0 600 Q200 450 400 600 T800 600" fill="#e2b45c" />
+  <!-- Riffa Fort style building -->
+  <rect x="500" y="450" width="150" height="150" fill="#c2a47c" />
+  <rect x="510" y="420" width="30" height="30" fill="#c2a47c" />
+  <rect x="610" y="420" width="30" height="30" fill="#c2a47c" />
+  <!-- Futuristic solar panels -->
+  <rect x="100" y="520" width="40" height="30" fill="#003366" transform="rotate(-20, 100, 520)" />
+</svg>

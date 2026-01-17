@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#001133" />
+  <!-- Sea -->
+  <rect x="0" y="500" width="800" height="100" fill="#0055aa" opacity="0.6" />
+  <path d="M0 500 Q200 480 400 500 T800 500" fill="#0077cc" />
+  <!-- Palm Trees -->
+  <path d="M100 500 L110 400" stroke="#5d4037" stroke-width="8" />
+  <path d="M110 400 Q140 370 170 410 M110 400 Q80 370 50 410 M110 400 Q110 350 110 450" fill="none" stroke="#2e7d32" stroke-width="6" stroke-linecap="round" />
+  <!-- Resort Building -->
+  <rect x="500" y="300" width="200" height="200" rx="10" fill="#ffffff" stroke="#ddd" />
+  <rect x="520" y="320" width="160" height="20" fill="#00ffff" opacity="0.3" />
+</svg>
