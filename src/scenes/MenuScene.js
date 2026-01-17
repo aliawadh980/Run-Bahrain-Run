@@ -5,148 +5,73 @@ export class MenuScene extends Phaser.Scene {
 
     create() {
         const { width, height } = this.scale;
-
-        // Background
         this.add.image(width / 2, height / 2, 'background1').setAlpha(0.5).setDisplaySize(width, height);
 
-        // Title
-        this.add.text(width / 2, height * 0.25, 'BAHRAIN QUEST 2026', {
-            fontSize: '72px',
-            fill: '#fff',
-            fontStyle: 'bold',
-            stroke: '#00ffff',
-            strokeThickness: 8
-        }).setOrigin(0.5).setResolution(2);
+        this.load.html('menu', 'assets/ui/menu.html');
+        this.load.once('complete', () => {
+            const menu = this.add.dom(width / 2, height / 2).createFromCache('menu');
+            this.setupMenuButtons(menu);
+        });
+        this.load.start();
+    }
 
-        // Buttons
+    setupMenuButtons(menu) {
         const unlockAudio = () => {
             if (this.sound.context && this.sound.context.state === 'suspended') {
                 this.sound.context.resume();
             }
-            if (!this.sound.get('bgm_menu') || !this.sound.get('bgm_menu').isPlaying) {
-                this.safePlaySound('bgm_menu', { loop: true, volume: 0.3 });
-            }
+            this.safePlaySound('bgm_menu', { loop: true, volume: 0.3 });
         };
 
-        this.createButton(width / 2, height * 0.5, 'START GAME', () => {
+        const startGameBtn = menu.getChildByID('start-game');
+        startGameBtn.addEventListener('click', () => {
             unlockAudio();
             this.scene.start('LevelSelectScene');
         });
 
-        this.createButton(width / 2, height * 0.62, 'LEADERBOARD', () => {
+        const leaderboardBtn = menu.getChildByID('leaderboard');
+        leaderboardBtn.addEventListener('click', () => {
             unlockAudio();
             this.showLeaderboard();
         });
 
-        this.createButton(width / 2, height * 0.74, 'HOW TO PLAY', () => {
+        const howToPlayBtn = menu.getChildByID('how-to-play');
+        howToPlayBtn.addEventListener('click', () => {
             unlockAudio();
-            this.showHowToPlay();
+            this.scene.start('InstructionsScene');
         });
 
-        // Credits
-        this.add.text(width / 2, height - 30, 'Created by AI for Bahrain 2026', { fontSize: '16px', fill: '#888' }).setOrigin(0.5);
-
-        // Auto-start music if already unlocked
-        if (this.sound.context && this.sound.context.state === 'running') {
-            if (!this.sound.get('bgm_menu') || !this.sound.get('bgm_menu').isPlaying) {
-                this.safePlaySound('bgm_menu', { loop: true, volume: 0.3 });
-            }
-        }
-    }
-
-    safePlaySound(key, config) {
-        try {
-            if (this.cache.audio.exists(key)) {
-                this.sound.play(key, config);
-            }
-        } catch (e) {
-            console.error(`Failed to play sound "${key}":`, e);
-        }
-    }
-
-    createButton(x, y, label, callback) {
-        const btn = this.add.text(x, y, label, {
-            fontSize: '28px',
-            fill: '#fff',
-            backgroundColor: '#00ffff44',
-            padding: { x: 20, y: 10 }
-        })
-        .setResolution(2)
-        .setOrigin(0.5)
-        .setInteractive({ useHandCursor: true })
-        .on('pointerdown', callback)
-        .on('pointerover', () => btn.setBackgroundColor('#00ffff88'))
-        .on('pointerout', () => btn.setBackgroundColor('#00ffff44'));
-
-        return btn;
+        const settingsBtn = menu.getChildByID('settings');
+        settingsBtn.addEventListener('click', () => {
+            unlockAudio();
+            // Placeholder for settings
+        });
     }
 
     showLeaderboard() {
-        const { width, height } = this.scale;
-        const overlay = this.add.container(0, 0).setDepth(10);
-
-        overlay.add(this.add.rectangle(width / 2, height / 2, width * 0.8, height * 0.8, 0x000000, 0.9).setOrigin(0.5));
-        overlay.add(this.add.text(width / 2, height * 0.2, 'LOCAL LEADERBOARD', { fontSize: '32px', fill: '#0ff' }).setOrigin(0.5).setResolution(2));
-
         const highScores = JSON.parse(localStorage.getItem('highScores') || '{}');
-        let yPos = height * 0.35;
-
+        let scoresHTML = '';
         for (let i = 1; i <= 5; i++) {
-            const score = highScores[i] || 0;
-            overlay.add(this.add.text(width / 2, yPos, `Level ${i}: ${score}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5).setResolution(2));
-            yPos += 40;
+            scoresHTML += `<p>Level ${i}: ${highScores[i] || 0}</p>`;
         }
 
-        overlay.add(this.createButton(width / 2, height * 0.8, 'CLOSE', () => overlay.destroy()));
-
-        const resetBtn = this.add.text(width / 2, height * 0.9, 'RESET ALL DATA', {
-            fontSize: '18px',
-            fill: '#f00'
-        })
-        .setOrigin(0.5)
-        .setResolution(2)
-        .setInteractive({ useHandCursor: true })
-        .on('pointerdown', () => {
-            if (confirm('Are you sure you want to reset all progress and high scores?')) {
-                localStorage.clear();
-                overlay.destroy();
-                this.showLeaderboard();
-            }
-        });
-        overlay.add(resetBtn);
-    }
-
-    showHowToPlay() {
-        const { width, height } = this.scale;
-        const overlay = this.add.container(0, 0).setDepth(10);
-
-        overlay.add(this.add.rectangle(width / 2, height / 2, width * 0.8, height * 0.8, 0x000000, 0.9).setOrigin(0.5));
-
-        const helpText = `
-        HOW TO PLAY
-
-        Desktop:
-        - Arrow Keys / Space: Move & Jump
-
-        Mobile:
-        - On-screen Buttons to Move & Jump
-
-        Objective:
-        - Collect Energy Pearls & Dates
-        - Avoid or Jump on Enemies
-        - Reach the Green Goal (end of level)
-
-        Power-ups:
-        - Shield: Protects from one hit
+        const leaderboardModal = `
+            <div id="leaderboard-modal" class="glass-panel" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; z-index: 100; padding: 2rem;">
+                <h2 style="font-size: 2rem; color: var(--primary); text-align: center; margin-bottom: 1.5rem;">Leaderboard</h2>
+                ${scoresHTML}
+                <button id="close-leaderboard" class="glass-button" style="margin-top: 1.5rem; display: block; margin-left: auto; margin-right: auto;">Close</button>
+            </div>
         `;
 
-        overlay.add(this.add.text(width / 2, height * 0.45, helpText, {
-            fontSize: '20px',
-            fill: '#fff',
-            align: 'center',
-            lineSpacing: 8
-        }).setOrigin(0.5).setResolution(2));
+        const modal = this.add.dom(0, 0).createFromHTML(leaderboardModal).setOrigin(0);
+        modal.getChildByID('close-leaderboard').addEventListener('click', () => {
+            modal.destroy();
+        });
+    }
 
-        overlay.add(this.createButton(width / 2, height * 0.9, 'CLOSE', () => overlay.destroy()));
+    safePlaySound(key, config) {
+        if (this.cache.audio.exists(key)) {
+            this.sound.play(key, config);
+        }
     }
 }
